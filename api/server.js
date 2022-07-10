@@ -1,19 +1,13 @@
 const express = require("express");
 const { graphqlHTTP} = require("express-graphql");
-const { GraphQLSchema } = require("graphql");
 const cors = require('cors');
 const colors = require('colors');
 
-
 const connectDB = require('./config/db');
-const {RootQueryType, RootMutateType} = require("./qraphql/schema")
+const schema = require("./schema")
 
 if (!process.env.NODE_ENV) require("dotenv").config();
 
-schema = new GraphQLSchema({
-    query: RootQueryType,
-    mutation: RootMutateType
-});
 
 const app = express();
 

@@ -1,5 +1,8 @@
 const { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLID, GraphQLNonNull} = require("graphql")
-const { projects, clients, ProjectType,  ClientType} = require("./../../data-store");
+const { ProjectType,  ClientType} = require("./cusTypes");
+
+const Project = require("../models/Project")
+const Client = require("../models/Client")
 
 const RootQueryType = new GraphQLObjectType({
     name: "Query",
@@ -9,25 +12,25 @@ const RootQueryType = new GraphQLObjectType({
             type: ProjectType,
             description: "Returns A Single Project",
             args: {id:{type: GraphQLID}},
-            resolve: (_,args)=> projects.find( proj => proj.id == args.id )
+            resolve: (_,args)=> Project.findById(args.id)
             
         },
         projects: {
             type: GraphQLList(ProjectType),
             description: "List of All Projects",
-            resolve: ()=> projects
+            resolve: ()=> Project.find()
             
         },
         clients: {
             type: GraphQLList(ClientType),
             description: "List of All clients",
-            resolve: () => clients
+            resolve: () => Client.find()
         },
         client: {
             type: ClientType,
             description: "Returns A Single Client",
             args: {id:{type: GraphQLID}},
-            resolve: (_,args)=> clients.find( client => client.id == args.id )
+            resolve: (_,args)=> Client.findById(args.id)
             
         },
     })
@@ -50,8 +53,8 @@ const RootMutateType = new GraphQLObjectType({
                 }
             },
             resolve: (_,args)=> {
-                const insert = {id: projects.length, clientId: args.clientId, name:args.name , description:args.description, completed:args.completed};
-                projects.push(insert);
+                const insert = new Project({id: projects.length, clientId: args.clientId, name:args.name , description:args.description, completed:args.completed});
+                insert.save();
                 return insert;
             }
             
@@ -66,7 +69,7 @@ const RootMutateType = new GraphQLObjectType({
             },
             resolve: (_,args)=> {
                 const insert = {id: clients.length, name:args.name , email:args.description, phone:args.phone};
-                clients.push(insert);
+                "pass"
                 return insert;
             }
         },
