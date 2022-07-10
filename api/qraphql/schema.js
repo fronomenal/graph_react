@@ -1,15 +1,22 @@
-const { GraphQLSchema, GraphQLObjectType, GraphQLString} = require("graphql")
+const { GraphQLObjectType, GraphQLString, GraphQLList} = require("graphql")
+const { projects, clients, ProjectType,  ClientType} = require("./../../data-store");
 
-const schema = new GraphQLSchema({
-    query: new GraphQLObjectType({
-        name: "HW",
-        fields: ()=> ({
-            message: {
-                type: GraphQLString,
-                resolve: ()=> "Hello, Graph World!"
-            }
-        })
+const RootQueryType = new GraphQLObjectType({
+    name: "Root",
+    description: "Root Query",
+    fields: ()=> ({
+        projects: {
+            type: GraphQLList(ProjectType),
+            description: "List of All Projects",
+            resolve: ()=> projects
+            
+        },
+        clients: {
+            type: GraphQLList(ClientType),
+            description: "List of All clients",
+            resolve: () => clients
+        }
     })
-})
+});
 
-module.exports = schema;
+module.exports = RootQueryType;
