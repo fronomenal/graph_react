@@ -1,4 +1,4 @@
-const { GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLBoolean } = require("graphql");
+const { GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLBoolean, GraphQLList } = require("graphql");
 
 const projects = [
     {
@@ -81,6 +81,10 @@ const projects = [
     description: "This represents a single Client requested by a client",
     fields: ()=> ({
         id: {type: GraphQLNonNull(GraphQLID)},
+        projects: {
+          type: GraphQLList(ProjectType),
+          resolve: (parent)=> projects.filter( proj => proj.id == parent.id)
+        },
         name: {type: GraphQLString},
         email: {type: GraphQLString},
         phone: {type: GraphQLString},
