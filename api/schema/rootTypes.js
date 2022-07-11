@@ -1,24 +1,24 @@
 const { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLID, GraphQLNonNull} = require("graphql")
-const { ProjectType,  ClientType} = require("./cusTypes");
+const { ProjectType,  ClientType, CusEnumType} = require("./cusTypes");
 
 const Project = require("../models/Project")
 const Client = require("../models/Client")
 
 const RootQueryType = new GraphQLObjectType({
-    name: "Query",
+    name: "Queries",
     description: "Root Query",
     fields: ()=> ({
         project: {
             type: ProjectType,
             description: "Returns A Single Project",
             args: {id:{type: GraphQLID}},
-            resolve: (_,args)=> Project.findById(args.id)
+            resolve: (_,args)=> Project.findById(args.id).populate("clientId")
             
         },
         projects: {
             type: GraphQLList(ProjectType),
             description: "List of All Projects",
-            resolve: ()=> Project.find()
+            resolve: ()=> Project.find().populate("clientId")
             
         },
         clients: {
@@ -37,29 +37,89 @@ const RootQueryType = new GraphQLObjectType({
 });
 
 const RootMutateType = new GraphQLObjectType({
-    name: "Mutation",
+    name: "Mutations",
     description: "Root Mutation for Creates, Updates and Deletes",
     fields: ()=> ({
-        createProject: {
+        postProject: {
             type: ProjectType,
             description: "Adds A Single Project",
             args: {
                 clientId:{type: GraphQLNonNull(GraphQLID)},
                 name:{type: GraphQLNonNull(GraphQLString)},
                 description:{type: GraphQLNonNull(GraphQLString)},
-                completed:{
-                    type: GraphQLString,
-                    defaultValue: false
-                }
+                status:{type: CusEnumType}
             },
-            resolve: (_,args)=> {
-                const insert = new Project({id: projects.length, clientId: args.clientId, name:args.name , description:args.description, completed:args.completed});
-                insert.save();
-                return insert;
+            resolve: async (_,args)=> {
+                const insert = new Project({clientId: args.clientId, name:args.name , description:args.description, status:args.status});
+                await insert.save();
+                return insert.populate("clientId");
             }
             
         },
-        createClient: {
+        putProject: {
+            type: ProjectType,
+            description: "Creates/Updates A Single Project by their ID",
+            args: {
+                id:{type: GraphQLNonNull(GraphQLID)},
+                clientId:{type: GraphQLID},
+                name:{type: GraphQLString},
+                description:{type: GraphQLString},
+                status:{type: CusEnumType}
+            },
+            resolve: async (_,args)=> {
+                let update = await Project.findById(args.id);
+
+                update ??= new Project();
+
+                if(args.clientId) update.clientId = args.clientId;
+                if(args.name) update.name = args.name;
+                if(args.description) update.description = args.description;
+                if(args.status) update.status = args.status;
+    
+                await update.save();
+                return update.populate("clientId");
+            }
+        },
+        patchProject: {
+            type: ProjectType,
+            description: "Updates A Single Project by their ID",
+            args: {
+                id:{type: GraphQLNonNull(GraphQLID)},
+                clientId:{type: GraphQLID},
+                name:{type: GraphQLString},
+                description:{type: GraphQLString},
+                status:{type: CusEnumType}
+            },
+            resolve: async (_,args)=> {
+                let update = await Project.findById(args.id);
+
+                if (!update) throw new Error("No Project With id: " + args.id);
+
+                if(args.clientId) update.clientId = args.clientId;
+                if(args.name) update.name = args.name;
+                if(args.description) update.description = args.description;
+                if(args.status) update.status = args.status;
+    
+                await update.save();
+                return update.populate("clientId");
+            }
+        },
+        deleteProject: {
+            type: ProjectType,
+            description: "Removes A Single Project by their ID",
+            args: {
+                id:{type: GraphQLNonNull(GraphQLID)}
+            },
+            resolve: async (_,args)=> {
+                let todel = await Project.findById(args.id);
+
+                if (!todel) throw new Error("No Project With id: " + args.id);
+    
+                await todel.remove();
+                return todel.populate("clientId");
+            }
+        },
+        postClient: {
             type: ClientType,
             description: "Adds A Single Client",
             args: {
@@ -67,10 +127,71 @@ const RootMutateType = new GraphQLObjectType({
                 email:{type: GraphQLNonNull(GraphQLString)},
                 phone:{type: GraphQLNonNull(GraphQLString)},
             },
-            resolve: (_,args)=> {
-                const insert = {id: clients.length, name:args.name , email:args.description, phone:args.phone};
-                "pass"
+            resolve: async (_,args)=> {
+                const insert = new Client({name:args.name , email:args.email, phone:args.phone});
+                await insert.save();
                 return insert;
+            }
+        },
+        putClient: {
+            type: ClientType,
+            description: "Updates A Single Client by their ID",
+            args: {
+                id:{type: GraphQLNonNull(GraphQLID)},
+                name:{type: GraphQLString},
+                email:{type: GraphQLString},
+                phone:{type: GraphQLString},
+            },
+            resolve: async (_,args)=> {
+                let update = await Client.findById(args.id);
+
+                update ??= new Project();
+
+                if (!update) throw new Error("No Project With id: " + args.id);
+
+                if(args.name) update.name = args.name;
+                if(args.email) update.email = args.email;
+                if(args.phone) update.phone = args.phone;
+    
+                await update.save();
+                return update;
+            }
+        },
+        patchClient: {
+            type: ClientType,
+            description: "Creates/Updates A Single Client by their ID",
+            args: {
+                id:{type: GraphQLNonNull(GraphQLID)},
+                name:{type: GraphQLString},
+                email:{type: GraphQLString},
+                phone:{type: GraphQLString},
+            },
+            resolve: async (_,args)=> {
+                let update = await Client.findById(args.id);
+
+                if (!update) throw new Error("No Project With id: " + args.id);
+
+                if(args.name) update.name = args.name;
+                if(args.email) update.email = args.email;
+                if(args.phone) update.phone = args.phone;
+    
+                await update.save();
+                return update;
+            }
+        },
+        deleteClient: {
+            type: ClientType,
+            description: "Removes A Single Client by their ID",
+            args: {
+                id:{type: GraphQLNonNull(GraphQLID)}
+            },
+            resolve: async (_,args)=> {
+                let todel = await Client.findById(args.id);
+
+                if (!todel) throw new Error("No Project With id: " + args.id);
+    
+                await todel.remove();
+                return todel;
             }
         },
     })
