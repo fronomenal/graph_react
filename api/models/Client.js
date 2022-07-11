@@ -8,6 +8,7 @@ const ClientSchema = new mg.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
         lowercase: true
     },
     phone: {
