@@ -169,7 +169,7 @@ const RootMutateType = new GraphQLObjectType({
             resolve: async (_,args)=> {
                 let update = await Client.findById(args.id);
 
-                if (!update) throw new Error("No Project With id: " + args.id);
+                if (!update) throw Error("No Project With id: " + args.id);
 
                 if(args.name) update.name = args.name;
                 if(args.email) update.email = args.email;

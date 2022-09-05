@@ -8,7 +8,7 @@ CusEnumType = new GraphQLEnumType({
   description: "Status of the current project",
   values: {
     "new": {value: "Not Started"},
-    "progess": {value: "Started"},
+    "progress": {value: "Started"},
     "completed": {value: "Completed"},
   }
 })
