@@ -36,7 +36,7 @@ CusEnumType = new GraphQLEnumType({
         clientId: {type: GraphQLNonNull(GraphQLID)},
         client: {
           type: ClientType,
-          resolve: (parent)=> parent.clientId
+          resolve: (parent)=> parent.populate("clientId").clientId
         },
         name: {type: GraphQLNonNull(GraphQLString)},
         description: {type: GraphQLString},

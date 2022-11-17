@@ -12,13 +12,13 @@ const RootQueryType = new GraphQLObjectType({
             type: ProjectType,
             description: "Returns A Single Project",
             args: {id:{type: GraphQLID}},
-            resolve: (_,args)=> Project.findById(args.id).populate("clientId")
+            resolve: (_,args)=> Project.findById(args.id)
             
         },
         projects: {
             type: GraphQLList(ProjectType),
             description: "List of All Projects",
-            resolve: ()=> Project.find().populate("clientId")
+            resolve: ()=> Project.find()
             
         },
         clients: {
