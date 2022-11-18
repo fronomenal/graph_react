@@ -52,7 +52,7 @@ const RootMutateType = new GraphQLObjectType({
             resolve: async (_,args)=> {
                 const insert = new Project({clientId: args.clientId, name:args.name , description:args.description, status:args.status});
                 await insert.save();
-                return insert.populate("clientId");
+                return await insert.populate("clientId");
             }
             
         },
@@ -77,7 +77,7 @@ const RootMutateType = new GraphQLObjectType({
                 if(args.status) update.status = args.status;
     
                 await update.save();
-                return update.populate("clientId");
+                return await update.populate("clientId");
             }
         },
         patchProject: {
@@ -101,7 +101,7 @@ const RootMutateType = new GraphQLObjectType({
                 if(args.status) update.status = args.status;
     
                 await update.save();
-                return update.populate("clientId");
+                return await update.populate("clientId");
             }
         },
         deleteProject: {
@@ -116,7 +116,7 @@ const RootMutateType = new GraphQLObjectType({
                 if (!todel) throw new Error("No Project With id: " + args.id);
     
                 await todel.remove();
-                return todel.populate("clientId");
+                return await todel.populate("clientId");
             }
         },
         postClient: {
@@ -169,7 +169,7 @@ const RootMutateType = new GraphQLObjectType({
             resolve: async (_,args)=> {
                 let update = await Client.findById(args.id);
 
-                if (!update) throw Error("No Project With id: " + args.id);
+                if (!update) throw new Error("No Project With id: " + args.id);
 
                 if(args.name) update.name = args.name;
                 if(args.email) update.email = args.email;
