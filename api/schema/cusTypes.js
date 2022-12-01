@@ -1,7 +1,6 @@
 const { GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLList, GraphQLEnumType} = require("graphql");
 
 const Project = require("../models/Project")
-const Client = require("../models/Client")
   
 CusEnumType = new GraphQLEnumType({
   name: "ProjectStatus",
