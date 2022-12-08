@@ -1,6 +1,7 @@
 import Header from "./components/Header";
 import Clients from "./components/Clients";
 import { ApolloProvider, ApolloClient, InMemoryCache} from "@apollo/client";
+import ClientPostModal from "./components/ClientPostModal";
 
 const cache = new InMemoryCache({typePolicies:{Query:{fields:{
   clients:{merge(existing, incoming){
@@ -22,6 +23,7 @@ function App() {
     <ApolloProvider client={client}>
       <Header/>
       <main className="container">
+        <ClientPostModal></ClientPostModal>
         <Clients/>
       </main>
     </ApolloProvider>
