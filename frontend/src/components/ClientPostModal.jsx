@@ -1,7 +1,8 @@
 import {useState} from 'react';
 import {FaUser} from "react-icons/fa";
 import {useMutation} from "@apollo/client"
-import { ADD_CLIENT } from '../queries/clientMutations';
+import {ADD_CLIENT} from '../queries/clientMutations';
+import {GET_CLIENTS} from '../queries/clientQueries'
 
 
 export default function ClientPostModal() {
@@ -14,11 +15,7 @@ export default function ClientPostModal() {
     variables: { name, email, phone },
     update(cache, { data: { postClient } }) {
       const { clients } = cache.readQuery({ query: GET_CLIENTS });
-
-      cache.writeQuery({
-        query: GET_CLIENTS,
-        data: { clients: [...clients, postClient] },
-      });
+      cache.writeQuery({query: GET_CLIENTS, data: { clients: [...clients, postClient] }, });
     },
   });
 
