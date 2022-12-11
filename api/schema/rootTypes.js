@@ -1,8 +1,14 @@
 const { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLID, GraphQLNonNull} = require("graphql")
 const { ProjectType,  ClientType, CusEnumType} = require("./cusTypes");
+const mg = require('mongoose');
 
 const Project = require("../models/Project")
 const Client = require("../models/Client")
+
+async function validateClientID(id){
+    if (!(mg.Types.ObjectId.isValid(id))) return false;
+    return await Client.exists({ _id: id });
+}
 
 const RootQueryType = new GraphQLObjectType({
     name: "Queries",
@@ -44,13 +50,16 @@ const RootMutateType = new GraphQLObjectType({
             type: ProjectType,
             description: "Adds A Single Project",
             args: {
-                clientId:{type: GraphQLNonNull(GraphQLID)},
+                clientId:{type: GraphQLID},
                 name:{type: GraphQLNonNull(GraphQLString)},
                 description:{type: GraphQLNonNull(GraphQLString)},
                 status:{type: CusEnumType}
             },
             resolve: async (_,args)=> {
-                const insert = new Project({clientId: args.clientId, name:args.name , description:args.description, status:args.status});
+
+                let cid = args.clientId;
+                if (!(await validateClientID(cid))) cid = null;
+                const insert = new Project({clientId: cid, name:args.name , description:args.description, status:args.status});
                 await insert.save();
                 return await insert.populate("clientId");
             }
@@ -71,7 +80,10 @@ const RootMutateType = new GraphQLObjectType({
 
                 update ??= new Project();
 
-                if(args.clientId) update.clientId = args.clientId;
+                if(args.clientId) {
+                    if (!(await validateClientID(args.clientId))) throw new Error("Invalid Client ID Provided");
+                    update.clientId = args.clientId;
+                }
                 if(args.name) update.name = args.name;
                 if(args.description) update.description = args.description;
                 if(args.status) update.status = args.status;
@@ -95,7 +107,10 @@ const RootMutateType = new GraphQLObjectType({
 
                 if (!update) throw new Error("No Project With id: " + args.id);
 
-                if(args.clientId) update.clientId = args.clientId;
+                if(args.clientId){
+                    if (!(await validateClientID(args.clientId))) throw new Error("No Client With id: " + args.clientId)
+                    update.clientId = args.clientId;
+                }
                 if(args.name) update.name = args.name;
                 if(args.description) update.description = args.description;
                 if(args.status) update.status = args.status;
