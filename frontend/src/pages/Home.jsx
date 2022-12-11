@@ -7,13 +7,17 @@ import Projects from "../components/Projects";
 export default function Home() {
   return (
     <>
-      <div className="d-flex gap-3 mb-4">
-        <ClientPostModal></ClientPostModal>
-        <ProjectPostModal></ProjectPostModal>
-      </div>
+      <div>
+        <p className="display-6 text-center">Projects</p>
+        <ProjectPostModal className="mt-4"></ProjectPostModal>
         <Projects/>
-        <hr />
+      </div>
+      <hr />
+      <div>
+        <p className="display-6 text-center">Clients</p>
+        <ClientPostModal className="mt-4"></ClientPostModal>
         <Clients/>
+      </div>
     </>
   )
 }
