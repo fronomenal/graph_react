@@ -1,8 +1,8 @@
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import Home from "./pages/Home";
 import Header from "./components/Header";
-import Clients from "./components/Clients";
-import Projects from "./components/Projects";
 import { ApolloProvider, ApolloClient, InMemoryCache} from "@apollo/client";
-import ClientPostModal from "./components/ClientPostModal";
+import O4Page from "./pages/O4Page";
 
 const cache = new InMemoryCache({typePolicies:{Query:{fields:{
   clients:{merge(existing, incoming){
@@ -22,12 +22,15 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <Header/>
-      <main className="container">
-        <ClientPostModal></ClientPostModal>
-        <Projects/>
-        <Clients/>
-      </main>
+      <Router>
+        <Header/>
+        <main className="container">
+          <Routes>
+            <Route path="/" element={<Home/>}/>
+            <Route path="*" element={<O4Page/>}/>
+          </Routes>
+        </main>
+      </Router>
     </ApolloProvider>
   )
 }
