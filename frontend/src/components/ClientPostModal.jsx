@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {FaUser} from "react-icons/fa";
 import {useMutation} from "@apollo/client"
 import {ADD_CLIENT} from '../queries/clientMutations';
-import {GET_CLIENTS} from '../queries/clientQueries'
+import {GET_CLIENTS} from '../queries/clientQueries';
 
 
 export default function ClientPostModal() {
@@ -53,7 +53,7 @@ export default function ClientPostModal() {
         aria-labelledby='clientPostModalLabel'
         aria-hidden='true'
       >
-        <div className='modal-dialog'>
+        <div className='modal-dialog modal-dialog-centered'>
           <div className='modal-content'>
             <div className='modal-header'>
               <h5 className='modal-title' id='clientPostModalLabel'>

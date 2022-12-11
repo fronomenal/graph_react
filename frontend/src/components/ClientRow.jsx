@@ -1,6 +1,6 @@
-import {FaTrash} from "react-icons/fa";
-import {useMutation} from "@apollo/client"
-import {DELETE_CLIENT} from "../queries/clientMutations"
+import {FaTrash, FaEdit} from "react-icons/fa";
+import {useMutation} from "@apollo/client";
+import {DELETE_CLIENT} from "../queries/clientMutations";
 import { GET_CLIENTS } from "../queries/clientQueries";
 
 function ClientRow({client}) {
@@ -16,9 +16,17 @@ function ClientRow({client}) {
       <td>{client.name}</td>
       <td>{client.email}</td>
       <td>{client.phone}</td>
-      <td><button className="btn btn-danger btn-sm" onClick={deleteClient}><FaTrash></FaTrash></button></td>
+      <td>
+        <button className="btn btn-danger btn-sm me-1" onClick={deleteClient}><FaTrash></FaTrash> </button>
+        <button type='button'
+          data-bs-toggle='modal'
+          data-bs-target={'#clientUpdateModal_'+client.id} 
+          className="btn btn-danger btn-sm">
+            <FaEdit></FaEdit>
+        </button>
+        </td>
     </tr>
   )
 }
 
-export default ClientRow
+export default ClientRow;
