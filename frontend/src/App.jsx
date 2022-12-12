@@ -15,7 +15,7 @@ const cache = new InMemoryCache({typePolicies:{Query:{fields:{
 }}}});
 
 const client = new ApolloClient({
-  uri: "http://localhost:8080/graphql",
+  uri: "https://fronom-graph-react.herokuapp.com/graphql",
   cache
 });
 
