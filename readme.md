@@ -20,4 +20,4 @@ Project uses the following packages:
 * Apollo Client
 
 ## Preview
-Live preview available on: [Netlify]()
+Live preview available on: [Netlify](https://fronom-react-graph.netlify.app/)
