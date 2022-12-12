@@ -204,6 +204,8 @@ const RootMutateType = new GraphQLObjectType({
                 let todel = await Client.findById(args.id);
 
                 if (!todel) throw new Error("No Project With id: " + args.id);
+                
+                Project.updateMany({clientId: args.id}, {$set: {clientId: null}});
     
                 await todel.remove();
                 return todel;
