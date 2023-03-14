@@ -21,3 +21,4 @@ Project uses the following packages:
 
 ## Preview
 Live preview available on: [Netlify](https://fronom-react-graph.netlify.app/)
+GraphQL API available at: [heroku](https://fronom-graph-react.herokuapp.com/graphql)
